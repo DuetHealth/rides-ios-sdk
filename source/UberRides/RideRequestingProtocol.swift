@@ -22,6 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+
 /**
  *  Protocol for an object that defines how to request a ride. Is expected to be used
  *  by any control that can request a ride for a user.

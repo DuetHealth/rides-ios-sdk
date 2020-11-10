@@ -24,6 +24,7 @@
 
 // MARK: DistanceEstimate
 
+import Foundation
 import UberCore
 
 /**

@@ -22,6 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+
 /// Wraps saving and retrieving objects from keychain.
 class KeychainWrapper: NSObject {
     private static let serviceName = "com.uber.rides-ios-sdk"

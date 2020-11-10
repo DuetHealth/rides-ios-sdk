@@ -29,6 +29,7 @@
  not compatible with the OAuth representation. Use an initializer if you want to serialize this
  via an OAuth representation.
  */
+import Foundation
 @objc(UBSDKAccessToken) public class AccessToken: NSObject, NSCoding {
     /// String containing the bearer token.
     @objc public private(set) var tokenString: String

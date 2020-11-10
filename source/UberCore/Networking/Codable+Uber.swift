@@ -22,6 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+
 extension JSONDecoder {
     /// JSON Decoder tailored to the Uber API JSON
     public static var uberDecoder: JSONDecoder {

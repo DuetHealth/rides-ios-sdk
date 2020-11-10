@@ -19,6 +19,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+
 @objc(UBSDKUpfrontFare) public class UpfrontFare: NSObject, Codable {
     /// A unique upfront fare identifier.
     @objc public private(set) var fareID: String?

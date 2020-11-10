@@ -25,6 +25,7 @@
 /**
  *  Defines the implicit grant authorization flow where access token is extracted from redirect fragment.
  */
+import Foundation
 @objc(UBSDKImplicitGrantAuthenticator) public class ImplicitGrantAuthenticator: BaseAuthenticator {
     @objc override var authorizationURL: URL {
         return OAuth.implicitLogin(clientID: Configuration.shared.clientID, scopes: self.scopes, redirect: Configuration.shared.getCallbackURI(for: .implicit)).url

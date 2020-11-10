@@ -23,6 +23,7 @@
 //  THE SOFTWARE.
 
 /// Factory class for creating DeeplinkErrors
+import Foundation
 class DeeplinkErrorFactory {
     
     static let errorDomain = "com.uber.rides-ios-sdk.deeplinkerror"

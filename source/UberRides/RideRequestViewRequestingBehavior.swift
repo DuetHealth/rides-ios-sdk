@@ -22,7 +22,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
 import UberCore
+import UIKit
 
 /**
  A RideRequesting object for requesting a ride via the RideRequestViewController

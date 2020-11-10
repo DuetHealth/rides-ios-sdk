@@ -22,6 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+
 /**
  Factory class for creating RideRequestViewErrors
  - Warning: The Ride Request Widget is deprecated, and will no longer work for new apps.

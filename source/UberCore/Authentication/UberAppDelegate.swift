@@ -22,6 +22,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+import UIKit
+
 /**
  Responsible for parsing any events that require switching to the Uber app.
  Designed to mimic methods from your application's AppDelegate and should
