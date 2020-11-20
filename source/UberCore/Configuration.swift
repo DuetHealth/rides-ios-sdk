@@ -169,16 +169,8 @@ private let callbackURIStringKey = "URIString"
 
         super.init()
 
-        if let defaultValue = getDefaultValue(clientIDKey) {
-            self.clientID = defaultValue
-        } else {
-            fatalConfigurationError("ClientID", key: clientIDKey)
-        }
-        if let defaultValue = getDefaultValue(appNameKey) {
-            self.appDisplayName = defaultValue
-        } else {
-            fatalConfigurationError("appDisplayName", key: appNameKey)
-        }
+        self.clientID = getDefaultValue(clientIDKey) ?? ""
+        self.appDisplayName = getDefaultValue(appNameKey) ?? (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ?? ""
         serverToken = getDefaultValue(serverTokenKey)
     }
     
