@@ -466,7 +466,7 @@ import UberCore
     
     // get image from media directory
     private func getImage(name: String) -> UIImage {
-        let bundle = Bundle(for: RideRequestButton.self)
+        let bundle = Bundle.main
         let image = UIImage(named: name, in: bundle, compatibleWith: nil)
         return image!
     }
