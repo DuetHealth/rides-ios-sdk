@@ -189,7 +189,7 @@ import UberCore
         
         uberTitleLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15) ?? UIFont.systemFont(ofSize: 16)
         
-        let titleText = NSLocalizedString("Ride there with Uber", bundle: Bundle(for: type(of: self)), comment: "Request button description")
+        let titleText = NSLocalizedString("Ride there with Uber", bundle: .main, comment: "Request button description")
         uberTitleLabel.text = titleText
         
         let logo = getImage(name: "Badge")
@@ -343,9 +343,9 @@ import UberCore
         attrString.addAttribute(NSAttributedString.Key.font, value: metadataFont, range: (attrString.string as NSString).range(of: subtitle))
 
         if attrString.string.isEmpty {
-            uberTitleLabel.text = NSLocalizedString("Ride there with Uber", bundle: Bundle(for: type(of: self)), comment: "Request button description")
+            uberTitleLabel.text = NSLocalizedString("Ride there with Uber", bundle: .main, comment: "Request button description")
         } else {
-            uberTitleLabel.text = NSLocalizedString("Get a ride", bundle: Bundle(for: type(of: self)), comment: "Request button shorter description")
+            uberTitleLabel.text = NSLocalizedString("Get a ride", bundle: .main, comment: "Request button shorter description")
         }
 
         uberMetadataLabel.attributedText = attrString
@@ -394,9 +394,9 @@ import UberCore
             if let timeEstimate = self.metadata.timeEstimate?.estimate {
                 let mins = timeEstimate / 60
                 if mins == 1 {
-                    titleText = String(format: NSLocalizedString("%d min away", bundle: Bundle(for: type(of: self)), comment: "Estimate is for car one minute away"), mins).uppercased(with: Locale.current)
+                    titleText = String(format: NSLocalizedString("%d min away", bundle: .main, comment: "Estimate is for car one minute away"), mins).uppercased(with: Locale.current)
                 } else {
-                    titleText = String(format: NSLocalizedString("%d mins away", bundle: Bundle(for: type(of: self)), comment: "Estimate is for car multiple minutes away"), mins).uppercased(with: Locale.current)
+                    titleText = String(format: NSLocalizedString("%d mins away", bundle: .main, comment: "Estimate is for car multiple minutes away"), mins).uppercased(with: Locale.current)
                 }
             }
 
@@ -409,7 +409,7 @@ import UberCore
                         surgeMultiplier > 1.0 {
                         surge = true
                     }
-                    let priceEstimateString = String(format: NSLocalizedString("%1$@ for %2$@", bundle: Bundle(for: type(of: self)), comment: "Price estimate string for an Uber product"), price, productName)
+                    let priceEstimateString = String(format: NSLocalizedString("%1$@ for %2$@", bundle: .main, comment: "Price estimate string for an Uber product"), price, productName)
                     if titleText.isEmpty {
                         titleText = priceEstimateString
                     } else {
