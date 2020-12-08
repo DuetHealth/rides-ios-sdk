@@ -150,11 +150,11 @@ import UberCore
     
     func displayNetworkErrorAlert() {
         self.rideRequestView.cancelLoad()
-        let alertController = UIAlertController(title: nil, message: NSLocalizedString("The Ride Request Widget encountered a problem.", bundle: Bundle(for: type(of: self)), comment: "The Ride Request Widget encountered a problem."), preferredStyle: .alert)
-        let tryAgainAction = UIAlertAction(title: NSLocalizedString("Try Again", bundle: Bundle(for: type(of: self)), comment: "Try Again"), style: .default, handler: { (UIAlertAction) -> Void in
+        let alertController = UIAlertController(title: nil, message: NSLocalizedString("The Ride Request Widget encountered a problem.", bundle: .main, comment: "The Ride Request Widget encountered a problem."), preferredStyle: .alert)
+        let tryAgainAction = UIAlertAction(title: NSLocalizedString("Try Again", bundle: .main, comment: "Try Again"), style: .default, handler: { (UIAlertAction) -> Void in
             self.load()
         })
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", bundle: Bundle(for: type(of: self)), comment: "Cancel"), style: .cancel, handler: { (UIAlertAction) -> Void in
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", bundle: .main, comment: "Cancel"), style: .cancel, handler: { (UIAlertAction) -> Void in
             self.delegate?.rideRequestViewController(self, didReceiveError: RideRequestViewErrorFactory.errorForType(.networkError))
         })
         alertController.addAction(tryAgainAction)
@@ -163,8 +163,8 @@ import UberCore
     }
     
     func displayNotSupportedErrorAlert() {
-        let alertController = UIAlertController(title: nil, message: NSLocalizedString("The operation you are attempting is not supported on the current device.", bundle: Bundle(for: type(of: self)), comment: "The operation you are attempting is not supported on the current device."), preferredStyle: .alert)
-        let okayAction = UIAlertAction(title: NSLocalizedString("OK", bundle: Bundle(for: type(of: self)), comment: "OK"), style: .default, handler: nil)
+        let alertController = UIAlertController(title: nil, message: NSLocalizedString("The operation you are attempting is not supported on the current device.", bundle: .main, comment: "The operation you are attempting is not supported on the current device."), preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: NSLocalizedString("OK", bundle: .main, comment: "OK"), style: .default, handler: nil)
         alertController.addAction(okayAction)
         self.present(alertController, animated: true, completion: nil)
     }
