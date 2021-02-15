@@ -44,7 +44,7 @@ import Foundation
      */
     @objc public static func fetchToken(identifier: String, accessGroup: String) -> AccessToken? {
         keychainWrapper.setAccessGroup(accessGroup)
-        guard let token = keychainWrapper.getObjectForKey(identifier) as? AccessToken else {
+        guard let token = keychainWrapper.getObject(AccessToken.self, forKey: identifier) else {
             return nil
         }
         return token

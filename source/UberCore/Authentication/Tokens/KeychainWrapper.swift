@@ -58,8 +58,9 @@ class KeychainWrapper: NSObject {
      */
     func setObject(_ object: NSCoding, key: String) -> Bool {
         var keychainItemData = getKeychainItemData(key)
-
-        let value = NSKeyedArchiver.archivedData(withRootObject: object)
+        guard let value = try? NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true) else {
+            return false
+        }
         keychainItemData[AttrAccessible] = kSecAttrAccessibleWhenUnlocked
         keychainItemData[ValueData] = value as AnyObject?
         
@@ -79,24 +80,20 @@ class KeychainWrapper: NSObject {
      
      - returns: the object in keychain or nil if none exists for the given key.
      */
-    func getObjectForKey(_ key: String) -> NSCoding? {
+    func getObject<ObjectType: NSObject & NSCoding>(_ type: ObjectType.Type, forKey key: String) -> ObjectType? {
         var keychainItemData = getKeychainItemData(key)
         
         keychainItemData[MatchLimit] = kSecMatchLimitOne
         keychainItemData[ReturnData] = kCFBooleanTrue
         
         var data: AnyObject?
-        let result = withUnsafeMutablePointer(to: &data) {
+        let status = withUnsafeMutablePointer(to: &data) {
             SecItemCopyMatching(keychainItemData as CFDictionary, UnsafeMutablePointer($0))
         }
-        
-        var object: AnyObject?
-        
-        if let data = data as? Data {
-            object = NSKeyedUnarchiver.unarchiveObject(with: data) as AnyObject?
+        let result = (data as? Data).flatMap { data in
+            try? NSKeyedUnarchiver.unarchivedObject(ofClass: ObjectType.self, from: data)
         }
-        
-        return result == noErr ? object as? NSCoding : nil
+        return status == noErr ? result : nil
     }
     
     /**

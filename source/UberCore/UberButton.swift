@@ -155,19 +155,13 @@ import UIKit
 }
 
 public class ColorUtil {
+    
     public static func colorForUberButtonColor(_ color: UberButtonColor) -> UIColor {
-        let hexCode = hexCodeFromColor(color)
-        let scanner = Scanner(string: hexCode)
-        var color: UInt32 = 0
-        scanner.scanHexInt32(&color)
-
-        let mask = 0x000000FF
-
-        let redValue = CGFloat(Int(color >> 16)&mask)/255.0
-        let greenValue = CGFloat(Int(color >> 8)&mask)/255.0
-        let blueValue = CGFloat(Int(color)&mask)/255.0
-
-        return UIColor(red: redValue, green: greenValue, blue: blueValue, alpha: 1.0)
+        let color = UInt32(hexCodeFromColor(color), radix: 16) ?? 0
+        let red = CGFloat(Int(color >> 16) & 0x000000FF) / 255.0
+        let green = CGFloat(Int(color >> 8) & 0x000000FF) / 255.0
+        let blue = CGFloat(Int(color) & 0x000000FF) / 255.0
+        return UIColor(red: red, green: green, blue: blue, alpha: 1)
     }
 
     private static func hexCodeFromColor(_ color: UberButtonColor) -> String {

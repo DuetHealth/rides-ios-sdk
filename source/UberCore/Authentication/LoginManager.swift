@@ -22,16 +22,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import AuthenticationServices
 import SafariServices
 
 /// Manages user login via SSO, authorization code grant, or implicit grant.
 @objc(UBSDKLoginManager) public class LoginManager: NSObject, LoginManaging {
+
     private(set) public var accessTokenIdentifier: String
     private(set) public var keychainAccessGroup: String
     private(set) public var loginType: LoginType
     private(set) public var productFlowPriority: [UberAuthenticationProductFlow]
     private var oauthViewController: UIViewController?
-    private var safariAuthenticationSession: Any? // Any? because otherwise this won't compile for earlier versions of iOS
+    // This is either an ASWebAuthenticationSession or an SFAuthenticationSession depending on
+    // the target version, erased to be target-independent since it's just used for retaining.
+    private var activeAuthenticationSession: Any?
     var authenticator: UberAuthenticating?
     var loggingIn: Bool = false
     var willEnterForegroundCalled: Bool = false
@@ -214,27 +218,9 @@ import SafariServices
      - returns: true if the url was meant to be handled by the SDK, false otherwise
      */
     public func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any?) -> Bool {
-        if #available(iOS 13.0, *) {
-            if loggingIn {
-                authenticator?.consumeResponse(url: url, completion: loginCompletion)
-                return true
-            } else {
-                return false
-            }
-        }
-        
-        guard let sourceApplication = sourceApplication else { return false }
-        let sourceIsNative = loginType == .native && (sourceApplication.hasPrefix("com.ubercab") || sourceApplication.hasPrefix("com.ubereats"))
-        let sourceIsSafariVC = loginType != .native && sourceApplication == "com.apple.SafariViewService"
-        let sourceIsSafari = loginType != .native && sourceApplication == "com.apple.mobilesafari"
-        let isValidSourceApplication = sourceIsNative || sourceIsSafariVC || sourceIsSafari
-
-        if loggingIn && isValidSourceApplication {
-            authenticator?.consumeResponse(url: url, completion: loginCompletion)
-            return true
-        } else {
-            return false
-        }
+        guard loggingIn else { return false }
+        authenticator?.consumeResponse(url: url, completion: loginCompletion)
+        return true
     }
 
     /**
@@ -247,11 +233,9 @@ import SafariServices
 
      - returns: true if the url was meant to be handled by the SDK, false otherwise
      */
-    @available(iOS 9.0, *)
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         let sourceApplication = options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String
         let annotation = options[.annotation] as Any?
-
         return application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
@@ -290,51 +274,19 @@ import SafariServices
     // Delegates a web login to SFAuthenticationSession, SFSafariViewController, or just Safari
     private func executeWebLogin(presentingViewController: UIViewController?, authenticator: UberAuthenticating) {
         self.authenticator = authenticator
-        if #available(iOS 11.0, *) {
-            executeSafariAuthLogin(authenticator: authenticator)
-        } else if #available(iOS 9.0, *) {
-            executeSafariVCLogin(presentingViewController: presentingViewController, authenticator: authenticator)
-        } else {
-            UIApplication.shared.openURL(authenticator.authorizationURL)
-        }
-    }
-
-    /// Login using SFAuthenticationSession
-    @available(iOS 11.0, *)
-    private func executeSafariAuthLogin(authenticator: UberAuthenticating) {
         guard let bundleID = Bundle.main.bundleIdentifier else {
             preconditionFailure("You do not have a Bundle ID set for your app. You need a Bundle ID to use Uber Authentication")
         }
-
-        let safariAuthenticationSession = SFAuthenticationSession(url: authenticator.authorizationURL, callbackURLScheme: bundleID, completionHandler: { (callbackURL, error) in
+        let session = ASWebAuthenticationSession(url: authenticator.authorizationURL, callbackURLScheme: bundleID) { callbackURL, error in
             if let callbackURL = callbackURL {
                 authenticator.consumeResponse(url: callbackURL, completion: self.loginCompletion)
             } else {
                 self.handleLoginCanceled()
             }
-            self.safariAuthenticationSession = nil
-        })
-        safariAuthenticationSession.start()
-        self.safariAuthenticationSession = safariAuthenticationSession
-    }
-
-    /// Login using SFSafariViewController
-    @available(iOS 9.0, *)
-    private func executeSafariVCLogin(presentingViewController: UIViewController?, authenticator: UberAuthenticating) {
-        // Find the topmost view controller, and present from it
-        var presentingViewController = presentingViewController
-        if presentingViewController == nil {
-            var topController = UIApplication.shared.keyWindow?.rootViewController
-            while let vc = topController?.presentedViewController {
-                topController = vc
-            }
-            presentingViewController = topController
+            self.activeAuthenticationSession = nil
         }
-
-        let safariVC = SFSafariViewController(url: authenticator.authorizationURL)
-
-        presentingViewController?.present(safariVC, animated: true, completion: nil)
-        oauthViewController = safariVC
+        session.start()
+        activeAuthenticationSession = session
     }
 
     /// Login using native deeplink

@@ -232,8 +232,9 @@ extension RideRequestView: WKNavigationDelegate {
                 decisionHandler(.cancel)
                 return
             } else if url.scheme == "tel" || url.scheme == "sms" {
-                if (!UIApplication.shared.openURL(url)) {
-                    delegate?.rideRequestView(self, didReceiveError: RideRequestViewErrorFactory.errorForType(.notSupported))
+                UIApplication.shared.open(url) { [weak self] success in
+                    guard success, let `self` = self else { return }
+                    self.delegate?.rideRequestView(self, didReceiveError: RideRequestViewErrorFactory.errorForType(.notSupported))
                 }
                 decisionHandler(.cancel)
                 return
